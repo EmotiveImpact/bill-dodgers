@@ -99,10 +99,10 @@
   var card = document.getElementById('card');
   if (card && window.MutationObserver) new MutationObserver(mark).observe(card, { childList: true, subtree: true });
 
-  // a locked level's address (sent here by 404.html as #members=3) opens the map with the lock card up
-  var m = /members=([1-6])/.exec(location.hash);
-  if (m && FREE.indexOf(+m[1]) < 0) {
-    try { history.replaceState(null, '', location.pathname + location.search + '#map'); } catch (e) {}
-    open(+m[1]);
+  // a locked level's address (sent here by 404.html as ?members=3#map) opens the map with the lock card up
+  var m = /[?&]members=([1-6])/.exec(location.search);
+  if (m) {
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    if (FREE.indexOf(+m[1]) < 0) open(+m[1]);
   }
 })();

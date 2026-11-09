@@ -23,7 +23,7 @@
   (function () {
     var p = location.pathname, m = /^(.*?\/)([1-6])-[1-7S](?:\/.*)?$/.exec(p);
     var base = m ? m[1] : (/^(.*\/bill-dodgers\/)/.exec(p) || [0, '/'])[1];
-    var to = base + '#map' + (m && +m[2] > 2 ? '&members=' + m[2] : '');
+    var to = base + (m && +m[2] > 2 ? '?members=' + m[2] : '') + '#map';
     document.getElementById('back').href = to;
     location.replace(to);
   })();
