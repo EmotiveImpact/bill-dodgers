@@ -1,0 +1,67 @@
+extends SceneTree
+const Notifications=preload("res://src/hud_notifications.gd")
+const Support=preload("res://tests/test_support.gd")
+var checks:=0
+var failures:Array[String]=[]
+func _initialize()->void:call_deferred("run")
+func check(ok:bool,label:String)->void:
+	checks+=1
+	if not ok:failures.append(label);printerr("FAIL: ",label)
+func tagged(commands:Array,tag:String)->Array:return commands.filter(func(c):return c.tag==tag)
+func run()->void:
+	var n=Notifications.new()
+	check(n.build_commands().is_empty(),"initially no notices")
+	n.show_banner("Stage 1-1: your street","Get the kitty back!")
+	check(n.build_commands().is_empty(),"source banner starts transparent")
+	n.step(.15);var out:Array=n.build_commands()
+	check(tagged(out,"banner_back")[0].rect==Rect2(0,210,960,110),"source band geometry")
+	check(is_equal_approx(tagged(out,"banner_back")[0].colour.a,.375),"300ms fade-in")
+	check(tagged(out,"banner_title")[0].position==Vector2(480,254) and tagged(out,"banner_title")[0].size==36,"source centered title")
+	check(tagged(out,"banner_sub")[0].position==Vector2(480,296) and tagged(out,"banner_sub")[0].size==16,"source subtitle")
+	n.step(.15);check(is_equal_approx(tagged(n.build_commands(),"banner_title")[0].colour.a,1),"full opacity after300ms")
+	n.step(2.3);check(is_equal_approx(tagged(n.build_commands(),"banner_title")[0].colour.a,.5),"fade-out halfway at2.6s")
+	n.step(.21);check(n.build_commands().is_empty(),"invisible at2.81s")
+	n.step(.10);check(n.banner.is_empty(),"source discard after2.9s")
+	n.show_banner("Warning!","The jar thief is here",true);n.step(.4);out=n.build_commands()
+	check(tagged(out,"banner_warning_stripe").size()==26,"source warning26 moving stripes")
+	check(tagged(out,"banner_back")[0].colour==Color(Color("781414"),.75),"source red warning band")
+	check(tagged(out,"banner_title")[0].colour==Color("ffd2d2"),"warning title pink")
+	var stripe:PackedVector2Array=tagged(out,"banner_warning_stripe")[0].points
+	check(is_equal_approx(stripe[0].x,-82),"source125px persecond stripe scroll")
+	var before=var_to_str([n.banner,n.go_time]);n.build_commands();n.build_commands()
+	check(before==var_to_str([n.banner,n.go_time]),"pure draw does not advance clocks")
+	n.reset();n.show_go();n.step(.2);out=n.build_commands()
+	check(is_equal_approx(n.go_time,2.0) and tagged(out,"go_arrow").size()==1,"wave-clear Go2200ms with300ms blink")
+	check(tagged(out,"go_label")[0].position==Vector2(850,260),"source Go position")
+	check(n.build_commands(Vector2(960,540),true).is_empty(),"ending suppresses Go")
+	n.step(.3);check(n.build_commands().is_empty(),"next Go blink interval hidden")
+	n.show_go(1.8);check(n.go_time==1.8,"door-specific1800ms Go duration")
+	n.reset();check(n.banner.is_empty() and n.go_time==0,"reset removes every notice")
+	var game=load("res://src/main.gd").new();root.add_child(game);await process_frame;Support.silence(game);game.set_physics_process(false)
+	for id in ["1-1","2-1","3-1","4-1","5-1","6-1"]:
+		game.load_level(id,false)
+		check(game.player_hud.notifications.banner.text.begins_with("Stage "+id+":"),"%s original stage banner"%id)
+		check(game.player_hud.notifications.banner.age==0,"%s load resets banner timer"%id)
+	game.load_level("1-1",false);game.start_boss()
+	check(game.player_hud.notifications.banner.sub=="The jar thief is here" and game.player_hud.notifications.banner.warn,"boss start exact warning")
+	game.player_hud.notifications.step(.5);game._pause();var age:float=game.player_hud.notifications.banner.age
+	game.step(.25,{})
+	check(game.player_hud.notifications.banner.age==age,"pause freezes presentation clocks")
+	game._resume();game.step(.01,{})
+	check(game.player_hud.notifications.banner.age>age,"resume advances presentation clocks")
+	game.festival_event({"banner":"Queue ahead","sub":"Duck under the signs","warn":true})
+	check(game.player_hud.notifications.banner.text=="Queue ahead" and game.player_hud.notifications.banner.warn,"festival callback presents original event")
+	var coins_before:int=game.coins.size();var score_before:int=game.score
+	game.holiday_event({"type":"warning","text":"The valve is open!","sub":"Shoot the valve on the flamingo for triple damage","warn":false})
+	check(game.player_hud.notifications.banner.text=="The valve is open!" and not game.player_hud.notifications.banner.warn,"Captain presentation adapter uses provided text/flag")
+	check(game.coins.size()==coins_before and game.score==score_before,"presentation callback never duplicates Captain rewards")
+	game.load_level("1-1",false);game.combat.waves=[{"started":true,"done":false,"at":0.0,"t":0.0,"index":0,"group":[]}]
+	game.combat.tick(0,game)
+	check(game.player_hud.notifications.go_time==2.2,"actual shared wave completion hooks Go")
+	game.combat.checks=[{"x":game.camera.x+10,"hit":false}];game.combat.tick(0,game)
+	check(game.player_hud.notifications.banner.text=="Checkpoint!" and game.player_hud.notifications.banner.sub=="Knocked out? You carry on from here","actual checkpoint original banner")
+	game.load_level("1-6",false);game.start_boss()
+	check(game.player_hud.notifications.banner.sub=="The Binman Bot. Shoot inside the lid!","Binman warning exact source instruction")
+	game.queue_free();await process_frame
+	if failures.is_empty():print("HUD notifications: %d checks passed."%checks);quit(0)
+	else:printerr("HUD notification failures: %d/%d"%[failures.size(),checks]);quit(1)

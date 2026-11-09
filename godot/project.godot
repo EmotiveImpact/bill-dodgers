@@ -1,0 +1,29 @@
+; Native-engine port. Import content before opening the project.
+config_version=5
+
+[application]
+config/name="Bill Dodgers · Native Preview"
+config/quit_on_go_back=false
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+
+[display]
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/handheld/orientation=0
+
+; Keep full artwork imports bounded on development/CI machines. No gameplay effect.
+[editor]
+import/use_multiple_threads=false
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+environment/defaults/default_clear_color=Color(0.055, 0.045, 0.09, 1)
+
+[input_devices]
+pointing/emulate_mouse_from_touch=true

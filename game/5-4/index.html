@@ -1,6 +1,7 @@
 <!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <script src="../polish.js"></script>
+<script src="../party.js"></script>
 <meta charset="utf-8">
 <title>Bill Dodgers 5-4 Flat-pack frenzy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -333,10 +334,11 @@ function wallClamp(x0, x1, f) {
 const insideWall = (x, y) => SURF.some((q) => !q.plat && !q.off && x > q.x0 && x < q.x1 && y > q.top + 4);
 let camY = 0;
 const viewTop = () => camY + VH - VH / ZOOM;
-let state = 'title', stateT = 0, paused = false;
+const savedParty = window.BDParty.read();
+let state = savedParty ? 'loading' : 'title', stateT = 0, paused = false;
 let players = [], bots = [], shots = [], bills = [], coins = [], parts = [], floats = [], crates = [], items = [], waves = [], waves0 = [], waves2 = [];
 let endT = 0, cam = 0, camV = 0, camLock = null, shake = 0, kitty = 0, boss = null, jar = null, goT = 0, continues = 0, banner = null, levelT = 0;
-let sel = { step: 0, cursor: 0, p1: null, p2: null, mode: store.get('mode', 'cpu') };
+let sel = { step: 0, cursor: 0, ...window.BDParty.defaults() };
 const MODES = ['cpu', 'p2', 'solo'], MODE_LABEL = { cpu: 'Mate: computer', p2: 'Mate: player 2 (keys)', solo: 'No mate, solo' };
 
 function mkPlayer(k, slot, cpu, x) {
@@ -344,6 +346,8 @@ function mkPlayer(k, slot, cpu, x) {
            down: false, revive: 0, coins: 0, pops: 0, power: null, powerT: 0, cpuIn: { l: 0, r: 0, j: 0, d: 0, s: 0, u: 0 }, ai: { t: 0, jumpCd: 0 }, flash: 0 };
 }
 function startLevel() {
+  Object.assign(sel, window.BDParty.save(sel));
+  paused = false;
   busGo = null; busHonked = false;
   const ks = [sel.p1, sel.mode === 'solo' ? null : sel.p2].filter(Boolean);
   players = ks.map((k, i) => mkPlayer(k, i, i === 1 && sel.mode === 'cpu', LV.start - i * 80));
@@ -1058,7 +1062,7 @@ const W5 = (() => {
     return { boxes, top: topY - 64, hw: (P.cols / 2) * bw + 30 };
   }
   function startKing() {
-    camLock = WORLD_W - WV; boss = { x: WORLD_W + 200, hp: 1, max: 1, state: 'enter', t: 0, face: -1, flash: 0, dizzy: 0, wave: [], phase: 0, armour: false, flying: [], next: 0 };
+    camLock = WORLD_W - WV; boss = { x: WORLD_W + 200, fy: GROUND, hp: 1, max: 1, state: 'enter', t: 0, face: -1, flash: 0, dizzy: 0, wave: [], phase: 0, armour: false, flying: [], next: 0 };
     setPhase(0); banner = { text: 'Warning!', sub: 'The Cardboard King', t: 0, warn: true }; SFX.warn(); bossMusic = true; playMusic('boss'); say('Warning. The Cardboard King.');
   }
   function setPhase(n) {
@@ -1616,7 +1620,7 @@ function drawClear(now) {
 }
 function cardAction(id) {
   if (id === 'settle') { card.phase = 1; SFX.coin(); SFX.power(); }
-  else if (id === 'again') { state = 'select'; sel.step = 2; }
+  else if (id === 'again') { startLevel(); }
   else if (id === 'share') {
     const s = META.txt.share + ' ' + players.map((p) => CH[p.k].name + ' ' + p.coins + ' coins').join(', ') + '. Commune, for people who do life, together: ourcommune.io';
     if (navigator.share) navigator.share({ text: s }).then(() => { card.shared = 'Shared!'; }, () => {});
@@ -1636,10 +1640,19 @@ bPause.addEventListener('click', () => { if (state === 'play') { paused = !pause
 document.addEventListener('visibilitychange', () => { if (document.hidden && state === 'play') { paused = true; bPause.textContent = 'Resume'; } });
 function loop(now) {
   const dt = Math.min(34, now - last); last = now;
+  // A returning party skips the per-stage title/select screens. Wait for story
+  // scenes as well as assets so the level never runs behind an opening scene.
+  if (window.BDStageStoryPending || (window.BDCutscenes && BDCutscenes.playing())) {
+    taps = []; pressed.clear(); keys.clear(); requestAnimationFrame(loop); return;
+  }
   musicTick();
-  if (state === 'title') {
+  if (state === 'loading') {
+    g.fillStyle = '#0e1726'; g.fillRect(0, 0, VW, VH);
+    txt('Loading level', VW / 2, VH / 2, 24, '#f4c542', 'center');
+    if (allLoaded() && fontReady) startLevel();
+  } else if (state === 'title') {
     drawTitle(now);
-    if (allLoaded() && fontReady && (taps.length || confirmPressed() || pressed.has('KeyX'))) { state = 'select'; sel.step = 0; sel.p1 = null; sel.p2 = null; sel.cursor = 0; audio(); startMusic(); SFX.select(); }
+    if (allLoaded() && fontReady && (taps.length || confirmPressed() || pressed.has('KeyX'))) { state = 'select'; Object.assign(sel, window.BDParty.defaults()); sel.step = 0; sel.cursor = 0; audio(); startMusic(); SFX.select(); }
   } else if (state === 'select') { updateSelect(); if (state === 'select') drawSelect(now); }
   else if (state === 'play' || state === 'over') {
     if (pressed.has('KeyP') || pressed.has('Escape')) { paused = !paused; bPause.textContent = paused ? 'Resume' : 'Pause'; }
@@ -1662,6 +1675,8 @@ function loop(now) {
 }
 requestAnimationFrame(loop);
 cv.focus();
+addEventListener('pointerdown', () => { if (state === 'play') audio(); });
+addEventListener('keydown', () => { if (state === 'play') audio(); });
 // test hook for automated checks
 window.__bd = { cont: () => { pressed.add('Enter'); }, get bots() { return bots; }, get waves() { return waves; }, get state() { return state; }, get cam() { return cam; }, get players() { return players; }, get boss() { return boss; }, sel, startLevel: () => { sel.p1 = sel.p1 || 'jp'; sel.p2 = sel.p2 || 'maya'; startLevel(); }, skipToBoss: () => { waves.forEach((w) => { w.started = true; w.done = true; }); camLock = null; cam = WORLD_W - WV; players.forEach((p, i) => { p.x = p.px = cam + 200 + i * 80; p.y = below(p.x, -9999).top - GROUND; p.onG = true; }); }, get camY() { return camY; }, LV, W5: () => W5, get levelT() { return levelT; }, get shots() { return shots; }, SURF, below, win: () => { if (boss) { boss.hp = 0; bossDown(); } } };
 /* bd-abilities */

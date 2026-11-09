@@ -1,0 +1,80 @@
+<!doctype html><meta charset="utf-8"><title>Bill Dodgers web party regression</title>
+<style>body{background:#14102a;color:#f5f1ea;font:16px system-ui;margin:20px}iframe{width:960px;height:600px;border:1px solid #888;max-width:100%}li{margin:6px 0}.pass{color:#9fe0b8}.fail{color:#ff8d8d}</style>
+<h1>Web party regression</h1><p id="status">Ready. Run on a local test server only. Existing bd-* save data is restored afterward.</p>
+<button id="run">Run regression</button><ol id="results"></ol><iframe id="game" title="Game under test"></iframe>
+<script type="module">
+const exhaustive = new URLSearchParams(location.search).has('all');
+const root = new URL(new URLSearchParams(location.search).get('root') || '../game/', location.href);
+let iframe = document.getElementById('game');
+const status = document.getElementById('status'), results = document.getElementById('results');
+const win = () => iframe.contentWindow, doc = () => iframe.contentDocument;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const check = (value, message) => { if (!value) throw Error(message); };
+const equal = (a, b, message) => check(JSON.stringify(a) === JSON.stringify(b), `${message}: ${JSON.stringify(a)} != ${JSON.stringify(b)}`);
+async function until(fn, message, timeout=25000) { const end = Date.now()+timeout; while(Date.now()<end) { try { if(fn()) return; } catch {} await delay(40); } throw Error('Timed out: '+message); }
+async function go(path) { const fresh=iframe.cloneNode(false);iframe.replaceWith(fresh);iframe=fresh;await new Promise((resolve,reject) => { const timer=setTimeout(()=>reject(Error('Navigation timeout: '+path)),25000);iframe.onload=()=>{clearTimeout(timer);resolve()};iframe.src=new URL(path,root).href; }); }
+const click = selector => { const el=doc().querySelector(selector); check(el,'missing '+selector); check(!el.disabled,'disabled '+selector); el.click(); };
+const key = code => { win().dispatchEvent(new (win().KeyboardEvent)('keydown',{code,key:code,bubbles:true})); win().dispatchEvent(new (win().KeyboardEvent)('keyup',{code,key:code,bubbles:true})); };
+const actors = () => win().__bd.players.map(p => ({k:p.k,cpu:p.cpu}));
+const savedParty = () => JSON.parse(localStorage.getItem('bd-party'));
+const playing = () => until(() => win().__bd && win().__bd.state==='play','stage play');
+const mapReady = () => until(() => doc().getElementById('load')?.style.display==='none','map ready');
+function pass(message) { const li=document.createElement('li'); li.textContent=message; li.className='pass';results.append(li); localStorage.setItem('web-party-test-results',results.innerText); }
+async function stopScene() { await until(()=>win().BDCutscenes?.playing(),'opening story');win().BDCutscenes.stop();await playing(); }
+function clearTestStorage() { for(const k of Object.keys(localStorage)) if(k.startsWith('bd-')) localStorage.removeItem(k); for(const k of Object.keys(sessionStorage)) if(k.startsWith('bd-')) sessionStorage.removeItem(k); }
+document.getElementById('run').onclick=async()=>{
+ document.getElementById('run').disabled=true;results.textContent='';localStorage.removeItem('web-party-test-results');status.textContent='Running';status.dataset.state='running';
+ const previousBackup=sessionStorage.getItem('web-party-test-backup');
+ if(previousBackup){clearTestStorage();JSON.parse(previousBackup).forEach((values,i)=>Object.entries(values).forEach(([k,v])=>[localStorage,sessionStorage][i].setItem(k,v)));}
+ const backup=[localStorage,sessionStorage].map(storage=>Object.fromEntries(Object.keys(storage).filter(k=>k.startsWith('bd-')).map(k=>[k,storage.getItem(k)])));
+ sessionStorage.setItem('web-party-test-backup',JSON.stringify(backup));
+ try {
+  clearTestStorage();
+  await go('#map');await mapReady();const membersBuild=!!doc().getElementById('bdLock');win().goTo('1-1');await until(()=>doc().querySelector('#card.open a.btn.go'),'first stage card');
+  click('#card a.btn.go');check(doc().getElementById('friends').classList.contains('open'),'first Play opens selector');
+  click('[data-character="mei"]');click('#fP2');check(doc().querySelector('[data-character="mei"]').disabled,'duplicate mate disabled');click('[data-character="ama"]');click('#fCancel');equal(savedParty(),null,'cancel does not save');
+  click('#card a.btn.go');click('[data-character="mei"]');click('#fP2');click('[data-character="ama"]');click('#fDone');
+  await until(()=>win().BDStageStoryPending && win().BDCutscenes?.playing()==='1-intro','story gate');
+  equal(win().__bd.state,'loading','stage is waiting behind intro');equal(actors(),[],'no simulation before intro');await stopScene();
+  equal(savedParty(),{version:1,p1:'mei',p2:'ama',mode:'cpu'},'first saved party');equal(actors(),[{k:'mei',cpu:false},{k:'ama',cpu:true}],'CPU party');pass('First map Play, cancel, distinct characters, saved CPU party and opening-story gate');
+  const expected=savedParty();win().__flow.clear();await delay(2100);key('Enter');await delay(100);key('Enter');
+  await until(()=>[root.pathname,root.pathname+'index.html'].includes(win().location.pathname),'return to map');await mapReady();
+  await until(()=>doc().querySelector('#card.open a.btn.go')?.getAttribute('href').includes('1-2/'),'next level card');
+  click('#card a.btn.go');await playing();equal(savedParty(),expected,'next stage party');equal(actors(),[{k:'mei',cpu:false},{k:'ama',cpu:true}],'next stage actors');
+  win().location.reload();await until(()=>win().__bd?.state==='loading','reload loading',5000).catch(()=>{});await playing();equal(actors(),[{k:'mei',cpu:false},{k:'ama',cpu:true}],'reload actors');pass('Clear, settle, Next level, map auto-walk, stage 1-2 and reload retain party');
+  win().__flow.clear();await delay(2100);key('Enter');await delay(100);
+  { const cv=doc().getElementById('game'),r=cv.getBoundingClientRect();
+  // The original card is canvas-drawn. Its Play again target is x210..470,y416..462.
+  cv.dispatchEvent(new (win().PointerEvent)('pointerdown',{clientX:r.x+340*r.width/960,clientY:r.y+439*r.height/540,bubbles:true,pointerId:1,pointerType:'mouse'})); }
+  await playing();equal(actors(),[{k:'mei',cpu:false},{k:'ama',cpu:true}],'replay actors');pass('Play again restarts directly without character reselection');
+  await go('#map');await mapReady();click('#bFriend');click('#fMode');click('[data-character="leo"]');click('#fP2');click('[data-character="theo"]');
+  doc().getElementById('fP2').dispatchEvent(new (win().KeyboardEvent)('keydown',{key:'Escape',bubbles:true}));equal(savedParty(),expected,'Escape cancels');
+  click('#bFriend');click('#fMode');click('[data-character="leo"]');click('#fP2');click('[data-character="theo"]');click('#fDone');
+  const progress=JSON.parse(localStorage.getItem('bd-save'));check(progress.cleared['1-1']&&progress.cleared['1-2']&&progress.seen['1-intro'],'campaign survives party change');
+  await go('2-2/');await playing();equal(actors(),[{k:'leo',cpu:false},{k:'theo',cpu:false}],'local P2');pass('Map-only local P2 change, Escape cancellation and campaign preservation');
+  await go('#map');await mapReady();click('#bFriend');click('#fMode');check(doc().getElementById('fP2').disabled,'solo disables mate');click('[data-character="maya"]');click('#fDone');
+  await go('2-S/');await playing();equal(actors(),[{k:'maya',cpu:false}],'solo bonus');pass('Solo party persists into bonus stages');
+  await go('#map');await mapReady();localStorage.removeItem('bd-party');sessionStorage.removeItem('bd-party');await go('1-2/');
+  await until(()=>win().__bd?.state==='title','fresh direct title');key('Enter');await until(()=>win().__bd.state==='select','fresh direct selection');
+  equal(win().__bd.sel.p1,'maya','legacy P1');equal(win().__bd.sel.mode,'solo','legacy mode');key('Enter');await delay(80);key('Enter');await playing();equal(actors(),[{k:'jp',cpu:false}],'direct selection');pass('Legacy direct-stage entry offers title and one selection using saved defaults');
+  // Exercise every available runtime with the same confirmed party. This checks
+  // actual stage startup, not human gameplay completion or difficulty.
+  win().BDParty.save({p1:'theo',p2:'mei',mode:'cpu'});
+  const campaign=JSON.parse(localStorage.getItem('bd-save'));campaign.seen={};
+  for(let world=1;world<=6;world++)for(const scene of ['intro','mid','boss','outro'])campaign.seen[`${world}-${scene}`]=1;
+  localStorage.setItem('bd-save',JSON.stringify(campaign));
+  const worlds=membersBuild?2:6;let count=0;
+  for(let world=1;world<=worlds;world++)for(const stage of (exhaustive ? ['1','2','3','4','5','6','S'] : ['2'])){
+   const id=`${world}-${stage}`;await go(id+'/');
+   await until(()=>win().__bd?.state==='play'||win().BDCutscenes?.playing(),'boot '+id);
+   if(win().BDCutscenes?.playing())await stopScene();else await playing();
+   equal(actors(),[{k:'theo',cpu:false},{k:'mei',cpu:true}],'party in '+id);count++;
+  }
+  pass(`${count} stage runtimes booted with the same P1 and CPU mate across every available world`);
+  await go('#map');await mapReady();
+  if(doc().getElementById('bdLock')){click('#bFriend');click('#bPreview');click('#fCancel');win().showCard({id:'3-1',kind:'level',world:3,nb:[{}]});click('#card a.btn.go');check(doc().getElementById('bdLock').classList.contains('on'),'members lock remains active');check(!doc().getElementById('friends').classList.contains('open'),'lock precedes selector');pass('Public build still blocks members-only worlds');}
+  status.textContent='PASS: All browser regression checks completed.';status.dataset.state='pass';
+ } catch(error){status.textContent='FAIL: '+error.stack;status.dataset.state='fail';const li=document.createElement('li');li.textContent=error.message;li.className='fail';results.append(li);}
+ finally {localStorage.setItem('web-party-test-results',status.textContent+'\n'+results.innerText);iframe.src='about:blank';clearTestStorage();[localStorage,sessionStorage].forEach((storage,i)=>Object.entries(backup[i]).forEach(([k,v])=>storage.setItem(k,v)));sessionStorage.removeItem('web-party-test-backup');document.getElementById('run').disabled=false;}
+};
+</script>

@@ -2,3 +2,18 @@ dist/
 node_modules/
 .vercel/
 .DS_Store
+__pycache__/
+godot/.godot/
+godot/assets/*
+!godot/assets/music/
+godot/assets/music/*
+!godot/assets/music/*.res
+!godot/assets/music/score_manifest.json
+godot/content/
+godot/reference/
+godot/builds/
+*.godot-export-credentials
+
+# Machine-generated validation reports stay local; source tests and summaries are tracked.
+docs/validation/
+docs/verification/

@@ -1,0 +1,24 @@
+BILL DODGERS - BUNDLED FONT NOTICES
+
+Silkscreen
+Copyright 2001 The Silkscreen Project Authors
+(https://github.com/googlefonts/silkscreen)
+Licensed under the SIL Open Font License, Version 1.1.
+Full copyright and license: res://legal/Silkscreen-OFL.txt
+Bundled font: res://assets/fonts/silk.woff2
+
+Pixelify Sans
+Copyright 2021 The Pixelify Sans Project Authors
+(https://github.com/eifetx/Pixelify-Sans)
+Licensed under the SIL Open Font License, Version 1.1.
+Full copyright and license: res://legal/PixelifySans-OFL.txt
+Bundled font: res://assets/fonts/pixelify.woff2
+
+These font files were copied unchanged from the game's supplied web source.
+Their licenses apply to the font software, not to Bill Dodgers code, artwork,
+story, audio, brands or other assets. No endorsement by the font authors is
+implied. The two accompanying OFL files contain the complete license terms.
+
+Official license sources:
+https://github.com/googlefonts/silkscreen/blob/206ccf3f5234c281461e63ecc59cbc6b0563472b/OFL.txt
+https://github.com/eifetx/Pixelify-Sans/blob/39df74aba80df8157546034b878e8be1eb565ced/OFL.txt
