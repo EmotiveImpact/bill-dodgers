@@ -44,7 +44,8 @@ fixture failures are not production audio defects.
    basenames and loader configuration must match. Do not rename individual
    generated files casually. HTTPS and WebGL 2 are required browser baselines.
 2. The Godot 4.6.3 generated loader explicitly rejects Safari below 15.2.
-   This is only a minimum gate, not a claim that every newer iPhone passes.
+   The published native-gzip wrapper needs Safari **16.4+** for
+   `DecompressionStream`. Neither minimum proves that every newer iPhone passes.
 3. On Web, `DisplayServer.get_display_safe_area()` does not provide the native
    iOS/Android notch implementation. Bound the canvas with CSS safe-area inset
    values on all four sides. Browser chrome changes and rotation must resize it.
@@ -101,7 +102,8 @@ fixture failures are not production audio defects.
   reach the canvas listeners. Use “After loading, tap the game to enable sound”
   rather than asserting the download tap unlocked it. This is source evidence,
   not verified Safari audio output or a guarantee against device interruptions.
-- The audited export is approximately278.5MiB PCK plus35.9MiB WASM. The pack
+- The initial audited export was approximately278.5MiB PCK plus 35.9 MiB WASM;
+  the published reduced export is 248.1 MiB PCK plus 35.9 MiB WASM. The pack
   is mostly texture payload. Chunked hosting must stream without retaining
   another concatenated pack copy, preserve `application/wasm`, propagate
   errors/cancellation and verify the assembled bytes. Loading and GPU texture
@@ -117,7 +119,7 @@ frame and canvas bounds match; the Start control is50px high. DOM observation
 confirms game touch-action:none and a scrollable gate with pan-y. These are
 desktop shell observations, not iPhone safe-area values.
 
-Clicking Load and play in the available cloud Chrome reports missing WebGL2
+Clicking Load and play in the available cloud Chrome reports missing WebGL 2
 and offers Reload and retry. Desktop inspection confirms that the desktop
 Chromium is the same browser instance. Its read-only `chrome://gpu` page shows
 WebGL and OpenGL disabled. No browser flags, security settings or sandbox were
@@ -139,6 +141,28 @@ The WASM is unchanged. All 1,243 retained payloads are SHA256-identical to the
 preceding export, and all 304 packed-runtime checks pass. The revised first
 download is about 284.4 MiB before HTTP encoding, not the initial 314 MiB notice
 described above. Shell text is generated from its actual export inventory.
+
+## Published transport checkpoint
+
+A separate owner-private Site deployment succeeded on 2026-11-09. The current
+wrapper serves 16 explicit `.gz` chunks, each below 20 MiB. Local tests decode every
+byte through the actual generated Godot progress wrapper, compare complete PCK
+and WASM SHA256, and compile the WASM with Node 24's streaming compiler. Tests
+also cover truncated/corrupt gzip, HTML authentication responses, HTTP/header
+errors, cancellation and hosts that apply HTTP content decoding. This proves
+local transport and compilation, not the live browser/GPU or physical device.
+
+The unchanged Godot progress wrapper does not reject its startup promise for
+some mid-body errors. A separate shim event now makes the live shell expose
+Reload and retry despite that pending promise. The shim retains one active
+part reader, without another concatenated game-pack buffer. Godot's own wrapper
+still eagerly pumps and ultimately buffers the pack, so end-to-end backpressure
+and zero-copy loading are not claimed.
+
+The published archive is 265,863,608 bytes compressed and 266,102,065 bytes expanded.
+Both must remain below 268,435,456 bytes. The actual PCK/WASM hashes above are
+unchanged after decoding; all game content remains present. Live header/access
+checks and physical Safari acceptance are separate from this local evidence.
 
 ## Actual browser/device acceptance still required
 

@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const root=process.argv[2];
+const engineSource=fs.readFileSync(root+'/dist/index.js','utf8');
+const begin=engineSource.indexOf('function getTrackedResponse(');const end=engineSource.indexOf('\n\tfunction loadFetch(',begin);
+const wrap=vm.runInNewContext('('+engineSource.slice(begin,end).trim()+')',{Response,ReadableStream});
+const nodes={};const events={};let gamePromise;
+for(const id of ['canvas','game-frame','gate','start','progress','load-status','error','storage-warning'])nodes[id]={hidden:id==='storage-warning',style:{},events:{},addEventListener(name,fn){this.events[name]=fn;},getBoundingClientRect(){return{width:844,height:390};},removeAttribute(){},focus(){},blur(){}};
+const document={hidden:false,baseURI:'https://test.example/',currentScript:{src:'https://test.example/chunk-loader.js'},documentElement:{style:{setProperty(){}}},getElementById:id=>nodes[id],addEventListener(){},createElement:()=>({getContext:()=>({MAX_TEXTURE_SIZE:3379,getParameter:()=>8192,getExtension:()=>({loseContext(){}})})})};
+const window={devicePixelRatio:1,indexedDB:{},location:{reload(){}},addEventListener:(name,fn)=>events[name]=fn,dispatchEvent:event=>events[event.type]?.(event),fetch:async input=>String(input).endsWith('first.part')?new Response(new Uint8Array([1,2,3]),{headers:{'Content-Length':'3'}}):new Response('Missing second part',{status:404})};
+class Engine{static getMissingFeatures(){return [];}startGame(){gamePromise=window.fetch('index.pck').then(response=>wrap(response,{loaded:0,done:false}).arrayBuffer());return gamePromise;}}
+const context={window,document,Engine,URL,Map,Headers,Response,ReadableStream,AbortController,DOMException,CustomEvent,DecompressionStream,ResizeObserver:class{observe(){}},console};
+const manifest={'index.pck':{size:6,type:'application/octet-stream',parts:[{file:'first.part',size:3},{file:'missing.part',size:3}]}};
+vm.runInNewContext(fs.readFileSync(new URL('./chunk-fetch-template.js',import.meta.url),'utf8').replace('__CHUNK_MANIFEST__',JSON.stringify(manifest)),context);
+const html=fs.readFileSync(root+'/dist/index.html','utf8');
+const shell=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]).find(x=>x.includes('const GODOT_CONFIG'));
+vm.runInNewContext(shell,context);
+const unhandled=[];const capture=error=>unhandled.push(error);process.on('unhandledRejection',capture);
+nodes.start.events.click();
+const outcome=await Promise.race([gamePromise.then(()=>'resolved',()=>'rejected'),new Promise(resolve=>setTimeout(()=>resolve('pending'),150))]);
+assert.equal(outcome,'pending');assert.ok(unhandled.length>0);assert.equal(nodes.gate.hidden,false);assert.equal(nodes.start.disabled,false);assert.equal(nodes.start.textContent,'Reload and retry');assert.match(nodes.error.textContent,/404.*part 2/);
+process.removeListener('unhandledRejection',capture);
+console.log('PASS exact generated Godot progress wrapper remains pending on body failure, but integrated adapter event immediately exposes the live shell Reload and retry UI.');

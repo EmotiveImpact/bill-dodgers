@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#10161b">
+<title>Bill Dodgers · Godot Preview</title>
+<link rel="icon" type="image/png" href="index.icon.png">
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#10161b;color:#edf1ed;font-family:system-ui,-apple-system,sans-serif}body{position:fixed;inset:0;overflow:hidden;overscroll-behavior:none}#game-frame{position:absolute;top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px);bottom:calc(env(safe-area-inset-bottom,0px) + var(--storage-reserve,0px));left:env(safe-area-inset-left,0px);overflow:hidden;touch-action:none;overscroll-behavior:none}#canvas{display:block;width:100%;height:100%;margin:0;padding:0;border:0;outline:none;touch-action:none;-webkit-touch-callout:none;user-select:none}#gate{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 80% 0%,#284342 0%,#10161b 65%);overflow:auto;touch-action:pan-y;overscroll-behavior:contain;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));display:grid;place-items:center}#gate[hidden]{display:none}.panel{width:min(100%,610px);padding:24px 0}.eyebrow{text-transform:uppercase;letter-spacing:.17em;color:#9fbdba;font-size:12px;font-weight:700}h1{font-weight:900;font-size:clamp(36px,8vw,64px);letter-spacing:-.055em;line-height:1;margin:18px 0}h1 span{color:#f0bf62}.intro{line-height:1.55;font-size:17px;color:#d2dddd;max-width:47ch}.notes{font-size:13px;line-height:1.5;color:#adbfbe;max-width:65ch}.actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:22px 0}button{font:inherit;font-weight:800;font-size:16px;min-height:48px;border:0;border-radius:11px;padding:14px 24px;background:#efbf66;color:#182426;cursor:pointer}button:focus-visible{outline:3px solid white;outline-offset:4px}button:disabled{cursor:wait;opacity:.65}progress{width:100%;height:12px;accent-color:#efbf66}#load-status{font-size:14px;line-height:1.45;min-height:1.5em;color:#f0d59d}#error{color:#ffd0c5;font-size:14px;line-height:1.5;white-space:pre-wrap}#storage-warning{position:fixed;z-index:5;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));margin:0;padding:8px 12px;background:#542f2a;color:#ffe0d6;font-size:12px;border-radius:8px;pointer-events:none}#rotate-hint{display:none}@media(orientation:portrait){#rotate-hint{display:block}}@media(max-height:420px){.panel{padding:0}#gate{place-items:start center}.eyebrow{margin-top:0}h1{font-size:36px;margin:10px 0}.intro{font-size:14px;margin:8px 0}.actions{margin:12px 0}.notes{margin:8px 0}}
+</style>
+</head>
+<body>
+<div id="game-frame"><canvas id="canvas" tabindex="0" aria-label="Bill Dodgers game">This browser does not support the game canvas.</canvas></div>
+<section id="gate" aria-label="Start Bill Dodgers preview">
+<div class="panel">
+<p class="eyebrow">Work in progress · Godot 4.6.3</p>
+<h1>BILL <span>DODGERS</span></h1>
+<p class="intro">Dodge the bills. Keep moving. Open this page directly in Safari 16.4 or newer, then turn your phone sideways.</p>
+<p class="notes">The first load downloads about __DOWNLOAD_MB__ MiB before compression. Wi-Fi is recommended. This is a preview build, and iPhone performance still needs device testing.</p>
+<div class="actions"><button id="start" type="button">Load and play</button><span id="rotate-hint" class="notes">Landscape gives you more room.</span></div>
+<progress id="progress" hidden aria-label="Loading game"></progress>
+<p id="load-status" role="status" aria-live="polite"></p>
+<p id="error" role="alert" hidden></p>
+<p class="notes">Touch controls are for Player 1. Choose Solo or a CPU partner on one phone. Tap the game to enable sound if it starts muted.</p>
+<p class="notes">Saves stay in this browser when storage is available. Private browsing, clearing site data, or Safari storage cleanup can erase progress. Saves do not sync between devices.</p>
+<noscript>JavaScript is required to run this game.</noscript>
+</div>
+</section>
+<p id="storage-warning" class="notes" hidden>Browser storage is unavailable. Progress may be lost when you close this page.</p>
+<script src="chunk-loader.js"></script>
+<script src="index.js"></script>
+<script>
+'use strict';
+const GODOT_CONFIG = __GODOT_CONFIG__;
+GODOT_CONFIG.canvasResizePolicy = 0;
+const canvas = document.getElementById('canvas');
+const frame = document.getElementById('game-frame');
+const gate = document.getElementById('gate');
+const button = document.getElementById('start');
+const progress = document.getElementById('progress');
+const statusText = document.getElementById('load-status');
+const errorText = document.getElementById('error');
+const storageWarning = document.getElementById('storage-warning');
+let started = false;
+let failed = false;
+function resizeCanvas() {
+  if (!storageWarning.hidden) document.documentElement.style.setProperty('--storage-reserve', Math.ceil(storageWarning.getBoundingClientRect().height + 24) + 'px');
+  const rect = frame.getBoundingClientRect();
+  const scale = window.devicePixelRatio || 1;
+  const width = Math.max(1, Math.floor(rect.width * scale));
+  const height = Math.max(1, Math.floor(rect.height * scale));
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== height) canvas.height = height;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+}
+resizeCanvas();
+if ('ResizeObserver' in window) new ResizeObserver(resizeCanvas).observe(frame);
+window.addEventListener('resize', resizeCanvas);
+window.visualViewport?.addEventListener('resize', resizeCanvas);
+document.addEventListener('visibilitychange', () => { if (document.hidden) canvas.blur(); });
+window.addEventListener('pagehide', () => canvas.blur());
+window.addEventListener('blur', () => canvas.blur());
+canvas.addEventListener('contextmenu', event => event.preventDefault());
+canvas.addEventListener('gesturestart', event => event.preventDefault(), { passive:false });
+const engine = new Engine(GODOT_CONFIG);
+function showStorageWarning() {
+  storageWarning.hidden = false;
+  resizeCanvas();
+}
+function showFailure(error) {
+  failed = true;
+  gate.hidden = false;
+  progress.hidden = true;
+  statusText.textContent = 'The preview could not start.';
+  errorText.hidden = false;
+  errorText.textContent = error?.message || String(error || 'Please reload and try again.');
+  button.disabled = false;
+  button.textContent = 'Reload and retry';
+}
+window.addEventListener('bill-dodgers-download-error', event => showFailure(new Error(event.detail?.message || 'The game download was interrupted. Reload to retry.')));
+button.addEventListener('click', () => {
+  if (failed) { window.location.reload(); return; }
+  if (started) return;
+  const missing = Engine.getMissingFeatures({ threads:false });
+  if (typeof ReadableStream === 'undefined') missing.push('streaming downloads');
+  if (typeof DecompressionStream === 'undefined') missing.push('streaming gzip decompression (Safari 16.4 or newer)');
+  if (missing.length) { showFailure(new Error('This browser is missing: ' + missing.join(', ') + '. Try a current version of Safari.')); return; }
+  const probe = document.createElement('canvas');
+  const graphics = probe.getContext('webgl2');
+  if (graphics) {
+    const textureLimit = graphics.getParameter(graphics.MAX_TEXTURE_SIZE);
+    graphics.getExtension('WEBGL_lose_context')?.loseContext();
+    if (textureLimit < 5591) { showFailure(new Error('This device supports textures up to ' + textureLimit + ' pixels. This preview needs 5591 pixels. Try a newer device. No game download has started.')); return; }
+  }
+  started = true;
+  button.disabled = true;
+  button.textContent = 'Loading…';
+  progress.hidden = false;
+  statusText.textContent = 'Downloading the game. Keep this tab open.';
+  resizeCanvas();
+  engine.startGame({
+    canvas,
+    onProgress(current,total) {
+      if (current > 0 && total > 0) {
+        progress.max = total;
+        progress.value = current;
+        statusText.textContent = current >= total ? 'Starting the game…' : 'Downloading ' + Math.floor(current / total * 100) + '% · ' + Math.round(current / 1048576) + ' / ' + Math.round(total / 1048576) + ' MiB';
+      } else { progress.removeAttribute('value'); statusText.textContent = 'Preparing the game…'; }
+    },
+    onPrint(message) {
+      if (/IndexedDB not available|Failed to save IDB/i.test(String(message))) showStorageWarning();
+    },
+    onPrintError(message) {
+      if (/IndexedDB not available|Failed to save IDB/i.test(String(message))) showStorageWarning();
+      console.error(message);
+    }
+  }).then(() => {
+    if (failed) return;
+    gate.hidden = true;
+    resizeCanvas();
+    canvas.focus({ preventScroll:true });
+  }).catch(showFailure);
+});
+if (!('indexedDB' in window)) showStorageWarning();
+</script>
+</body>
+</html>

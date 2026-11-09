@@ -12,7 +12,11 @@ checks. The new Web-foundation launcher passes 23 story-cache, 11 music-policy,
 91 runtime-prerequisite and 21 focus-lifecycle checks, plus 22 Python guards.
 The Web-only package excludes 36 verified-unused original web stage-title
 imports, preserving every retained payload and all original repository files.
-Its 304 packed-runtime checks also pass; the hosting archive is 253.5224 MiB.
+Its 304 packed-runtime checks also pass. A separate owner-private browser
+preview has now been published without changing the original site. Lossless
+streamed gzip chunks fit both compressed and expanded 256 MiB hosting limits;
+the portable preparation tool and transport tests are included in the repo.
+The wrapper requires Safari 16.4+; actual iPhone gameplay remains unverified.
 
 Finished cutscenes now release their textures, reducing measured post-story
 live engine allocations by about 194 MiB. Browser music streams instead of
@@ -75,8 +79,8 @@ replaced by a fake gameplay clear or weakened progression condition.
 
 ## Still separate
 
-Real Android/iPhone export and installation, signing, Safari/browser preview,
+Real Android/iPhone export and installation, signing, Safari gameplay acceptance,
 normal-health human difficulty, physical-device input/performance/audio/heat,
-final art/music acceptance, Commune membership/app integration and publication.
+final art/music acceptance, Commune membership/app integration and production release.
 The tested resource PCK is game data, not an APK or IPA. The isolated genuine Rive
 HUD preview does not replace the native HUD and is not required to edit the game.

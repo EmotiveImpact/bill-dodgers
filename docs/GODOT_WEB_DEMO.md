@@ -5,6 +5,10 @@ The `Web Demo` preset exports the actual Godot game, with all six worlds and
 original web deployment, or migrate its browser saves. Publishing the result
 is a separate step, not a side effect of this helper.
 
+A separate owner-private development preview was successfully published on
+2026-11-09. Hosting success does not establish browser gameplay or physical
+iPhone acceptance; those limits are listed below.
+
 ## Reproduce the export
 
 1. Prepare the complete checkout using `scripts/prepare-native.py` as described
@@ -82,9 +86,18 @@ if exporting through the GUI, then rerun the packed-runtime checks.
 The reduced pack removed only 36 textures and their 36 import remaps. All 1,243
 retained payloads have identical SHA256 to the preceding export; the generated
 UID index changes to reflect the removals. All 304 packed-runtime checks pass
-again. The official hosting archive measures **265,837,541 bytes / 253.5224 MiB**,
-below its 256 MiB input limit by 2,597,915 bytes. This margin must be rechecked
-after changes. No artwork quality, gameplay or story content was reduced.
+again. The published wrapper stores explicit lossless `.gz` chunks and streams
+them back to these exact bytes. Its archive measures **265,863,608 bytes** and
+its expanded archive members measure **266,102,065 bytes**, both below the
+256 MiB / 268,435,456-byte platform limits. The smaller margin is only
+2,333,391 bytes and must be rechecked after changes. No artwork quality, gameplay
+or story content was reduced.
+
+The portable wrapper and its tests live in [`scripts/web-preview`](../scripts/web-preview/README.md).
+Preparing it does not upload anything, create a hosting project, change access
+or alter the original site. This wrapper needs Safari **16.4 or later** for
+`DecompressionStream`, a newer minimum than the engine alone. The approximately
+254 MiB compressed initial payload remains a substantial phone download.
 
 The mobile shell needs an explicit start gesture for audio, landscape/rotation
 guidance, CSS safe-area bounds applied to the actual canvas, and no browser
@@ -94,14 +107,26 @@ second on-screen joystick. Save persistence depends on browser IndexedDB and
 storage policy. Private browsing, eviction and embedded third-party restrictions
 can prevent durable saves. Do not promise persistence from a single API probe.
 
-Godot's loader requires Safari 15.2 or later and WebGL2. Two preserved artwork
+Godot's loader alone requires Safari 15.2 or later and WebGL2; the published
+streaming wrapper raises the Safari minimum to **16.4**. Two preserved artwork
 strips are 5,591 pixels wide, so the target's texture-size limit also matters.
 This minimum is an engine capability requirement, not proof that every supported
 iPhone has acceptable performance.
 
 ## Evidence and remaining acceptance
 
-The release export and its file headers/hashes were verified locally. New
+The release export and its file headers/hashes were verified locally. The
+portable hosting suites verify exact full PCK/WASM decoding, unchanged engine
+assets, native gzip errors/cancellation, the real generated Godot progress
+wrapper, recovery UI and WebAssembly streaming compilation in Node 24. These
+transport/compiler checks are not browser gameplay.
+
+A body-read failure in the unchanged Godot progress wrapper can leave its
+startup promise pending. The hosting shim therefore also emits a failure event
+that exposes Reload and retry immediately; a late startup result cannot hide
+the failure. The shim uses one active chunk reader and no extra concatenated
+pack buffer, but Godot itself ultimately buffers the complete pack. No claim
+of end-to-end zero-copy loading or measured iPhone memory is made. New
 export helper tests (6), exact title-exclusion guards (6), Web source guards (6), native Web-foundation checks
 (91), and real-main window-focus checks (21) pass. Story texture release and
 Web audio policy have separate regressions documented in
