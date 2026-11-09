@@ -2,9 +2,8 @@
 
 Updated 2026-11-09. This concerns the **new Godot Web export**, not the original
 HTML game produced by `scripts/build-web.mjs`. The original browser `bd-save`
-and the Godot preview save are separate. No production code was changed by
-this audit. The parent and audio worker separately added the Web window-focus
-and browser-only music-stream fixes described below.
+and the Godot preview save are separate. Production fixes for Web window-focus notifications and browser-only music
+streaming are covered by the separate regressions described below.
 
 ## Verified prerequisites
 
@@ -26,16 +25,15 @@ and browser-only music-stream fixes described below.
   and music, clears contacts and freezes physics. Window focus-in does not
   resume gameplay/story. Explicit Resume keeps held keys suppressed until
   neutral input; fresh inputs work afterward. Story and isolated credits
-  interruption fixtures also pass. This regression covers the parent's Web
+  interruption fixtures also pass. This regression covers the Web
   window-notification fix, not a browser-generated event.
 - Existing real-input suites `test_touch_controls.gd` and
   `test_mobile_menu_integration.gd` cover synthetic contacts, steering plus
   jump/fire, cancellation, rotation and explicit pause/resume. They were
   inspected, not rerun as part of the above 91 checks.
 
-The latest diagnostics are `foundation.log` and `focus.log` in
-`/tmp/web-runtime-acceptance/` in this workspace. Early test-only
-runs incorrectly expected an idle spare audio channel to report paused, and
+Detailed diagnostic logs are retained locally, outside the public repository.
+Early test-only runs incorrectly expected an idle spare audio channel to report paused, and
 stopped audio before the mixer had processed its startup. The final fixture
 uses an actual two-channel crossfade and allows mixer retirement. Those early
 fixture failures are not production audio defects.
@@ -88,8 +86,8 @@ fixture failures are not production audio defects.
   48kHz this is about22MiB per buffer. Compressed `.res` byte sizes therefore
   do not represent browser audio memory. The score adapter caches requested cues. A separate repair now sets both
   score players to Stream **on Web only**, leaving native defaults and sound
-  effects unchanged. The source/engine policy is tested separately by the
-  audio worker, but browser memory/latency still needs measurement.
+  effects unchanged. The source/engine policy has a separate regression, but browser
+  memory/latency still needs measurement.
 - Small effects retain low-latency sample playback. Browser-only Stream music
   avoids the full-track Sample registration path but trades it for audio
   processing/latency risk. Actual browser listening remains unverified.
@@ -111,8 +109,8 @@ fixture failures are not production audio defects.
 
 ## Actual browser observations and blocker
 
-The final preview entry page was opened through CUA at the hosting worker's
-verified local URL `http://127.0.0.1:4173/`. Its visible final state shows Work
+The final preview entry page was opened in the desktop browser at the local
+preview server. Its visible final state shows Work
 in progress, the approximately314MiB first-download warning, Solo/CPU phone
 advice, audio interaction advice and storage caveat. At1180×757 CSS pixels,
 frame and canvas bounds match; the Start control is50px high. DOM observation
@@ -120,19 +118,19 @@ confirms game touch-action:none and a scrollable gate with pan-y. These are
 desktop shell observations, not iPhone safe-area values.
 
 Clicking Load and play in the available cloud Chrome reports missing WebGL2
-and offers Reload and retry. Native CUA inspection confirms that the desktop
+and offers Reload and retry. Desktop inspection confirms that the desktop
 Chromium is the same browser instance. Its read-only `chrome://gpu` page shows
 WebGL and OpenGL disabled. No browser flags, security settings or sandbox were
 changed. This is an execution-environment capability blocker, not a game crash.
 **No actual Web game rendering, physics, audio or durable storage was observed.**
-The final entry screen was reloaded after the hosting worker replaced the
-preliminary assets. GPU capability still prevents proceeding beyond the gate.
+The final entry screen was reloaded after the preliminary assets were replaced
+with the final export. GPU capability still prevents proceeding beyond the gate.
 
 The final export manifest records PCK SHA256
 `91d854a970e18f252421e91f3e4b8cb5f629f1a1e5b51941d34ba6dc8c8825e1`
 and WASM SHA256
 `26b61ce95247012ab3dca3ff51e96d1cdbff44ee91a8c20a83e150afca83f1b6`.
-The hosting worker independently validates chunk reassembly, not this browser.
+Local packaging independently validates chunk reassembly; this browser does not.
 
 ## Actual browser/device acceptance still required
 
