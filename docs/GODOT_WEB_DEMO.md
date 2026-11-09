@@ -41,7 +41,7 @@ Its complete SHA512 matched the release checksum:
   Godot reject the export. This does not prevent mobile browsers using the
   existing lossless textures.
 - No PWA/service worker or automatic offline caching in the first demo.
-- Source data, all levels, original artwork, fonts/notices and prebuilt audio
+- Source data, all levels, runtime-referenced original artwork, fonts/notices and prebuilt audio
   are included. Tests, raw audio intermediates and source-reference scripts
   are excluded just as in the native presets.
 - Only long music uses Web streaming playback. Short effects keep their
@@ -57,10 +57,34 @@ assets into streamed, byte-identical chunks to meet a per-file limit. Such a
 wrapper must preserve MIME types, length, errors and aborts, and must not retain
 another complete copy of the game pack unnecessarily.
 
-The first full export contains roughly **278.5 MiB of game data plus 36 MiB of
-WebAssembly**, before HTTP content encoding. Recommend Wi-Fi and show size and
-download progress before the user starts. This is a full-content development
-demo, not an optimized small first-level download.
+The current export contains **260,165,440 bytes of game data plus 37,700,666 bytes
+of WebAssembly**, about 284.4 MiB with the smaller support files, before HTTP
+content encoding. Recommend Wi-Fi and show size and download progress before
+the user starts. This is a full-content development demo, not a small first-level
+download.
+
+### Exclude unused titles without changing the game
+
+The initial export also bundled 36 original web stage-title JPEG imports that
+the native runtime never uses. The native Bill Dodgers title, official selector,
+all stage paintings, sprites and cutscenes remain included. The exact Web-only
+list is `scripts/native-web-title-exclusions.json`. No source/import files are
+deleted, and the Android/iOS presets are unchanged.
+
+`check-web-title-exclusions.py` verifies original bytes/provenance, every current
+runtime data reference, and the reviewed dynamic resource loaders. The export
+helper invokes it automatically and requires the exact preset list. A future
+reference, changed loader or changed original blocks export until reviewed; do
+not refresh fingerprints blindly to hide a failure.
+Direct editor exports do not invoke this Python helper. Run the checker first
+if exporting through the GUI, then rerun the packed-runtime checks.
+
+The reduced pack removed only 36 textures and their 36 import remaps. All 1,243
+retained payloads have identical SHA256 to the preceding export; the generated
+UID index changes to reflect the removals. All 304 packed-runtime checks pass
+again. The official hosting archive measures **265,837,541 bytes / 253.5224 MiB**,
+below its 256 MiB input limit by 2,597,915 bytes. This margin must be rechecked
+after changes. No artwork quality, gameplay or story content was reduced.
 
 The mobile shell needs an explicit start gesture for audio, landscape/rotation
 guidance, CSS safe-area bounds applied to the actual canvas, and no browser
@@ -78,7 +102,7 @@ iPhone has acceptable performance.
 ## Evidence and remaining acceptance
 
 The release export and its file headers/hashes were verified locally. New
-export helper tests (6), Web source guards (6), native Web-foundation checks
+export helper tests (6), exact title-exclusion guards (6), Web source guards (6), native Web-foundation checks
 (91), and real-main window-focus checks (21) pass. Story texture release and
 Web audio policy have separate regressions documented in
 [the resource profile](NATIVE_RESOURCE_PROFILE.md).

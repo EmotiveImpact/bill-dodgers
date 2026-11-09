@@ -126,11 +126,19 @@ changed. This is an execution-environment capability blocker, not a game crash.
 The final entry screen was reloaded after the preliminary assets were replaced
 with the final export. GPU capability still prevents proceeding beyond the gate.
 
-The final export manifest records PCK SHA256
+The initial full export manifest recorded PCK SHA256
 `91d854a970e18f252421e91f3e4b8cb5f629f1a1e5b51941d34ba6dc8c8825e1`
 and WASM SHA256
 `26b61ce95247012ab3dca3ff51e96d1cdbff44ee91a8c20a83e150afca83f1b6`.
 Local packaging independently validates chunk reassembly; this browser does not.
+
+The smaller complete-game export excludes only 36 unused original web stage-title
+textures and their import remaps. Its PCK is 260,165,440 bytes with SHA256
+`647de4318d26edf61e4b7cbb1312166a2428871e4f04b99366a0ecd9a12605fd`.
+The WASM is unchanged. All 1,243 retained payloads are SHA256-identical to the
+preceding export, and all 304 packed-runtime checks pass. The revised first
+download is about 284.4 MiB before HTTP encoding, not the initial 314 MiB notice
+described above. Shell text is generated from its actual export inventory.
 
 ## Actual browser/device acceptance still required
 

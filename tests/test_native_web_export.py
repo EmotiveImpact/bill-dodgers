@@ -22,7 +22,10 @@ class NativeWebExportTests(unittest.TestCase):
                        "progressive_web_app/ensure_cross_origin_isolation_headers"):
             self.assertFalse(presets["preset.2.options"].getboolean(option))
         self.assertEqual(presets["preset.2"]["include_filter"], presets["preset.0"]["include_filter"])
-        self.assertEqual(presets["preset.2"]["exclude_filter"], presets["preset.0"]["exclude_filter"])
+        report = exporter.validate_exclusion_preset()
+        self.assertEqual(report["validated_count"], 36)
+        self.assertEqual(json.loads(presets["preset.2"]["exclude_filter"]),
+                         json.loads(presets["preset.0"]["exclude_filter"]) + "," + report["filter"])
         original_web = json.loads((ROOT / "vercel.json").read_text())
         self.assertEqual(original_web["buildCommand"], "node scripts/build-web.mjs")
         self.assertEqual(original_web["outputDirectory"], "dist")

@@ -9,8 +9,10 @@ not an installable phone build, final soundtrack approval or release certificate
 A separate single-threaded Godot Web release export now succeeds using verified
 official 4.6.3 templates. Its actual resource pack passes 304 asset-free runtime
 checks. The new Web-foundation launcher passes 23 story-cache, 11 music-policy,
-91 runtime-prerequisite and 21 focus-lifecycle checks, plus 16 Python guards.
-All Python source/setup tests pass (65 total at this checkpoint).
+91 runtime-prerequisite and 21 focus-lifecycle checks, plus 22 Python guards.
+The Web-only package excludes 36 verified-unused original web stage-title
+imports, preserving every retained payload and all original repository files.
+Its 304 packed-runtime checks also pass; the hosting archive is 253.5224 MiB.
 
 Finished cutscenes now release their textures, reducing measured post-story
 live engine allocations by about 194 MiB. Browser music streams instead of

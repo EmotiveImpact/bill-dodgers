@@ -5,7 +5,9 @@ Uses already downloaded official 4.6.3 templates. Does not download, install,
 publish, change the original web build, or read a player's saves/settings.
 """
 import argparse
+import configparser
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -19,6 +21,20 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "4.6.3.stable"
 TEMPLATES = ("web_nothreads_debug.zip", "web_nothreads_release.zip")
+
+
+def validate_exclusion_preset():
+    specification = importlib.util.spec_from_file_location("web_title_exclusions", ROOT / "scripts/check-web-title-exclusions.py")
+    checker = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(checker)
+    report = checker.validate()
+    presets = configparser.ConfigParser(interpolation=None)
+    presets.read(ROOT / "godot/export_presets.cfg")
+    native = json.loads(presets["preset.0"]["exclude_filter"])
+    web = json.loads(presets["preset.2"]["exclude_filter"])
+    if web != native + "," + report["filter"]:
+        raise RuntimeError("Web preset must exclude exactly the audited unused stage titles plus the normal native exclusions")
+    return report
 
 
 def validate_templates(directory):
@@ -74,6 +90,8 @@ def main(argv=None):
     try:
         templates = options.templates_dir.resolve()
         validate_templates(templates)
+        exclusions = validate_exclusion_preset()
+        print("Verified Web-only unused title exclusions:", exclusions["validated_count"], flush=True)
         godot = shutil.which(options.godot) or str(Path(options.godot).resolve())
         output = options.output_dir.resolve()
         # Never export into/over the original web source or deployment output.
@@ -116,7 +134,7 @@ def main(argv=None):
         print("Web files exported locally:", output)
         print("Not hosted or iPhone-tested. Serve via HTTP(S), not file://.")
         return 0
-    except (OSError, RuntimeError, subprocess.CalledProcessError, zipfile.BadZipFile) as error:
+    except (OSError, RuntimeError, ValueError, subprocess.CalledProcessError, zipfile.BadZipFile) as error:
         print("Web export blocked:", error, file=sys.stderr)
         return 1
 

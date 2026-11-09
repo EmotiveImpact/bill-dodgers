@@ -55,6 +55,37 @@ future explicit runtime export manifest, not proof that arbitrary source art can
 be deleted. Dynamic and source-preservation references must be checked and the
 asset-free packed runtime rerun before excluding anything. Originals stay intact.
 
+### Verified Web-only exclusion follow-up
+
+The 36 candidates were subsequently traced to the original web pages' independent
+`SRC.title` JPEGs, outside their `META.imgs`: 42 source stages use 36 distinct
+images because World 6 shares one title. Every candidate is absent from current
+runtime level/map/story/catalog JSON and production code. The native title and
+credits use retained `assets/title.jpg`; the full-body selector uses retained
+`content/levels/1-1.json:imgs.st0`. Dynamic loaders were reviewed: stage/map keys
+come from checked JSON, while other asset paths use fixed sprites, cutscenes,
+fonts, music or effects directories. None constructs an embedded-image path.
+
+`scripts/native-web-title-exclusions.json` lists the exact 36 paths, original
+SHA-256 values, all source-stage provenance and seven reviewed loader fingerprints.
+`scripts/check-web-title-exclusions.py --print-filter` validates the current
+project and emits an exact comma-separated exclusion string. Export integration
+must run that check first and apply its result **only to the Web preset**. It
+fails if a runtime source/JSON references an excluded hash, a reviewed loader
+changes, another dynamic loader appears, an asset changes or required generated
+content is absent. Fingerprints require a deliberate new reachability review,
+not automatic refreshing. Six regression tests pass, including future reference,
+wildcard, identity and duplicate rejection.
+
+Measured against the full Web `index.pck` of 292,026,016 bytes, the exclusions
+target 72 actual pack entries: **31,849,509 payload bytes plus 10,656 directory
+bytes**. Estimated PCK size is 260,165,851 bytes before packing alignment changes.
+Independent level-9 compression of the CTEX payloads totals 31,849,553 bytes,
+suggesting enough archive saving for the 256 MiB hosting cap, but **the regenerated
+archive size and full packed-runtime gate must still be measured**. This audit
+does not edit the preset or export helper itself. No original/import file is
+removed and no used art is resized or re-encoded.
+
 ## What loads and when
 
 - Title startup eagerly loads all six housemate sheets plus bot/thief sheets:

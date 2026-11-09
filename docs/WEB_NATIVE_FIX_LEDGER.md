@@ -102,6 +102,15 @@ Receipt relocations remain native-only, and no changes have been deployed.
   now uses the actual active actor's CPU flag in movement, firing and animation,
   preserving source diagonal CPU aim. `test_party_cpu_skills.gd` passes 78 checks.
   The affected World 5/6 all-six-CPU route matrices were rerun successfully.
+- Native story textures remained cached after scenes finished. The cache now
+  releases before the completion signal, preserving reentrant next-scene loads.
+  Paired profiling measured about 194 MiB fewer live allocations after the story
+  sweep. This is a Godot resource-lifecycle fix, not a Canvas patch.
+- Godot Web emits window/canvas focus notifications rather than application
+  focus notifications. Native host handling now recognizes both, pauses and
+  releases held input. Web-only long-music streaming also avoids requesting
+  whole-song Sample buffers; source effects and native playback are unchanged.
+  These browser-export adaptations do not change the original Canvas engine.
 
 See `NATIVE_GAMEPLAY_AUDIT.md` and `PLAYER_HUD_PARITY.md` for verified scope and
 limits. Unit/command tests are not phone testing or a complete visual comparison.
@@ -115,10 +124,12 @@ limits. Unit/command tests are not phone testing or a complete visual comparison
    is not a patch for the Canvas engine.
 2. **Export the Godot implementation for the web.** This could share the same
    GDScript gameplay and native fixes, but it is a new web build. It needs the
-   matching web export templates, an actual export, browser graphics/audio/input
-   and load/memory testing, and hosting compatibility review. No web export has
-   been produced or validated here. Do not replace the current website merely
-   because a native resource pack passed.
+   matching web export templates, browser graphics/audio/input and load/memory
+   testing, and hosting compatibility review. A separate single-threaded 4.6.3
+   export now succeeds and its actual resource pack passes 304 isolated runtime
+   checks. Available cloud Chromium lacks WebGL; actual browser gameplay and
+   physical Safari acceptance remain open. See `GODOT_WEB_DEMO.md`. Do not
+   replace the current website merely because a resource pack passed.
 
 An original Canvas backport and a Godot web export are different deliverables.
 Neither has been published by this implementation.

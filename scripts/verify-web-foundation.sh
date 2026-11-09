@@ -10,6 +10,7 @@ mkdir -p "$HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
 python3 -m unittest discover -s tests -p test_native_web_export.py
 python3 -m unittest discover -s tests -p test_godot_web_compatibility.py
 python3 -m unittest discover -s tests -p test_native_resource_profile.py
+python3 -m unittest discover -s tests -p test_web_title_exclusions.py
 for suite in test_story_resource_lifecycle test_score_web_playback test_web_runtime_foundation test_web_focus_integration; do
   export XDG_DATA_HOME="$work/$suite-data"
   mkdir -p "$XDG_DATA_HOME"

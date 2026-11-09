@@ -1,0 +1,347 @@
+{
+  "excluded_assets": [
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/0d502f04aec48e8186f2ee24f262b8785a7a3519b4a64218ed3fd931bcde9d34.jpg",
+      "sha256": "0d502f04aec48e8186f2ee24f262b8785a7a3519b4a64218ed3fd931bcde9d34",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-3/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 910554,
+      "path": "assets/embedded/10a1c90fa6797180bb5e8be5ca1f19d699dba7b0724aee7eacea3fa3d02a29ca.jpg",
+      "sha256": "10a1c90fa6797180bb5e8be5ca1f19d699dba7b0724aee7eacea3fa3d02a29ca",
+      "source_bytes": 262163,
+      "source_stage_titles": [
+        "game/4-1/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/1bcc80570f00f3a564c0e5b32ddeb90a5f090d1a4426c716c260479b47c070d3.jpg",
+      "sha256": "1bcc80570f00f3a564c0e5b32ddeb90a5f090d1a4426c716c260479b47c070d3",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-2/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 1041218,
+      "path": "assets/embedded/1bf95a8f5173531017e85c42b55d433f43956fd11d2d8451aa26bd790e060499.jpg",
+      "sha256": "1bf95a8f5173531017e85c42b55d433f43956fd11d2d8451aa26bd790e060499",
+      "source_bytes": 305560,
+      "source_stage_titles": [
+        "game/4-3/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/20a22c6562a4905ca24ef14eabf4f6f668975ca1d496d0a4289e2579e5b645b0.jpg",
+      "sha256": "20a22c6562a4905ca24ef14eabf4f6f668975ca1d496d0a4289e2579e5b645b0",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-6/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/2771f8162001f99efe5371e1af1f267536f45008cba9dba78c5454f2e5125988.jpg",
+      "sha256": "2771f8162001f99efe5371e1af1f267536f45008cba9dba78c5454f2e5125988",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-6/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/290758f96c520cb2d2c5d2a38a6f8f0e5e9946c128dd10a146728f2c6ef40f7a.jpg",
+      "sha256": "290758f96c520cb2d2c5d2a38a6f8f0e5e9946c128dd10a146728f2c6ef40f7a",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/2cc5fdd7f98fa7355e3b8bf271d941e3d06de09ba48339c11bca9f6be79466d3.jpg",
+      "sha256": "2cc5fdd7f98fa7355e3b8bf271d941e3d06de09ba48339c11bca9f6be79466d3",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-4/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/35a60535c0f870a68e15aa850afea3f9adc253f9abdd27e608fec836f8e0b06e.jpg",
+      "sha256": "35a60535c0f870a68e15aa850afea3f9adc253f9abdd27e608fec836f8e0b06e",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-2/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/383de52cbde3ffab650bc8358f8fafbc62037376033cc34a09b2746430f57287.jpg",
+      "sha256": "383de52cbde3ffab650bc8358f8fafbc62037376033cc34a09b2746430f57287",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-3/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/407dc08d48e3062eb386fcaebbf5ab3859a69c7b30e730e7cb07de040049f675.jpg",
+      "sha256": "407dc08d48e3062eb386fcaebbf5ab3859a69c7b30e730e7cb07de040049f675",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-5/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/536bd961fe8b78b03c65a9d20cf72459bf83622a2b3d3f0ff443e93bddfea22f.jpg",
+      "sha256": "536bd961fe8b78b03c65a9d20cf72459bf83622a2b3d3f0ff443e93bddfea22f",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-6/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/71bd779e0b08a7d97949c16afa05eafc9ca34d33c6a83d06e48d637fd39b0427.jpg",
+      "sha256": "71bd779e0b08a7d97949c16afa05eafc9ca34d33c6a83d06e48d637fd39b0427",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-3/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 69454,
+      "path": "assets/embedded/79223cbdf81e9c814752739ffd1799ca9095e36e544f015a37c5f8e93590c630.jpg",
+      "sha256": "79223cbdf81e9c814752739ffd1799ca9095e36e544f015a37c5f8e93590c630",
+      "source_bytes": 38588,
+      "source_stage_titles": [
+        "game/4-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/81827d74d933ef74448f951f5b54532c9b6629d8b67a9915aa96166a1a657217.jpg",
+      "sha256": "81827d74d933ef74448f951f5b54532c9b6629d8b67a9915aa96166a1a657217",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-1/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/82f257dd39bf513e85e3d5c0e9a96102f358f4bb01a7513d175c339179accd0b.jpg",
+      "sha256": "82f257dd39bf513e85e3d5c0e9a96102f358f4bb01a7513d175c339179accd0b",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-4/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/85e6836eca2b53fa8d67093e1610cb4fd206c503da361f90c3d00ce5cdc96ad8.jpg",
+      "sha256": "85e6836eca2b53fa8d67093e1610cb4fd206c503da361f90c3d00ce5cdc96ad8",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-1/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 1060636,
+      "path": "assets/embedded/8d094e414b43844b30efaef6ff13d745ce5508913537006e9849879f58444550.jpg",
+      "sha256": "8d094e414b43844b30efaef6ff13d745ce5508913537006e9849879f58444550",
+      "source_bytes": 320928,
+      "source_stage_titles": [
+        "game/4-4/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/95bc3c5f4b1796ee9dc4fd4caf94b24634be1116c0c2e5726d9c213ac74517eb.jpg",
+      "sha256": "95bc3c5f4b1796ee9dc4fd4caf94b24634be1116c0c2e5726d9c213ac74517eb",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 1006062,
+      "path": "assets/embedded/9a523c0a3e1340fe6b3e1ab338676427d3534e76ef5b06a9e6f65942f89cb8b1.jpg",
+      "sha256": "9a523c0a3e1340fe6b3e1ab338676427d3534e76ef5b06a9e6f65942f89cb8b1",
+      "source_bytes": 298932,
+      "source_stage_titles": [
+        "game/4-2/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/9bdbdf72eb4266cc8a205147c6d7b8ca6a4729ad6929fb7869f072a7c3bf7dbe.jpg",
+      "sha256": "9bdbdf72eb4266cc8a205147c6d7b8ca6a4729ad6929fb7869f072a7c3bf7dbe",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-1/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/a146cc981a69403e7611a872e6216d35d9f77106051a375c962b665f2b2e530c.jpg",
+      "sha256": "a146cc981a69403e7611a872e6216d35d9f77106051a375c962b665f2b2e530c",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-3/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/a3ea410d9eba4526a2e7c4c0160556e26fdfe558869b5de7b1802df8ba6c8d89.jpg",
+      "sha256": "a3ea410d9eba4526a2e7c4c0160556e26fdfe558869b5de7b1802df8ba6c8d89",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/a70deb4b157f9e90119a5fc06a0ac5131e7f730848ab12b054c1efd73803800d.jpg",
+      "sha256": "a70deb4b157f9e90119a5fc06a0ac5131e7f730848ab12b054c1efd73803800d",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-4/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 955196,
+      "path": "assets/embedded/b1be4c3c729768fb80b632e4fc7fb10e50a42be2ca033f941f3f310c0017f070.jpg",
+      "sha256": "b1be4c3c729768fb80b632e4fc7fb10e50a42be2ca033f941f3f310c0017f070",
+      "source_bytes": 279675,
+      "source_stage_titles": [
+        "game/3-5/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 64514,
+      "path": "assets/embedded/bff4ba4da714cb2e89fd6a373943246ea5c9e99a1decbabda756116da34ff1e2.jpg",
+      "sha256": "bff4ba4da714cb2e89fd6a373943246ea5c9e99a1decbabda756116da34ff1e2",
+      "source_bytes": 31188,
+      "source_stage_titles": [
+        "game/4-5/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/c375072af21276237774c780dd0a19980db7540a4f2d8918db9187f5f792d834.jpg",
+      "sha256": "c375072af21276237774c780dd0a19980db7540a4f2d8918db9187f5f792d834",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-5/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/c453ac46b55de38642c3a985337f4096a6941a27c9f7b5724988a19775b28c4a.jpg",
+      "sha256": "c453ac46b55de38642c3a985337f4096a6941a27c9f7b5724988a19775b28c4a",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 35686,
+      "path": "assets/embedded/c677ade7f0be48d04d411aef1c066ec867ab2d76a8ebe8c2938dbb86a53d3d36.jpg",
+      "sha256": "c677ade7f0be48d04d411aef1c066ec867ab2d76a8ebe8c2938dbb86a53d3d36",
+      "source_bytes": 32524,
+      "source_stage_titles": [
+        "game/4-6/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 860600,
+      "path": "assets/embedded/cf478ba1736612f36dfd5bd79e3e3f2bceac82ebf7ba1eba96e2f349599301e3.jpg",
+      "sha256": "cf478ba1736612f36dfd5bd79e3e3f2bceac82ebf7ba1eba96e2f349599301e3",
+      "source_bytes": 270542,
+      "source_stage_titles": [
+        "game/6-1/index.html",
+        "game/6-2/index.html",
+        "game/6-3/index.html",
+        "game/6-4/index.html",
+        "game/6-5/index.html",
+        "game/6-6/index.html",
+        "game/6-S/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/d0b54b2c2d6c9909e7644ccd0ffbc4a0fde019e4bc3f08d63061811829318727.jpg",
+      "sha256": "d0b54b2c2d6c9909e7644ccd0ffbc4a0fde019e4bc3f08d63061811829318727",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-2/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/e1854f82ac73fd242a689631e3701a3ecc08a6ae05f0eb6c7729238abb947dbd.jpg",
+      "sha256": "e1854f82ac73fd242a689631e3701a3ecc08a6ae05f0eb6c7729238abb947dbd",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/5-5/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/e2a43813743105466ee3191cad14e95cc6653e44a9e77e6035f2fc2a47a2da94.jpg",
+      "sha256": "e2a43813743105466ee3191cad14e95cc6653e44a9e77e6035f2fc2a47a2da94",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-1/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/f0f739fbce9cc6a16198e87c8be53ed0c97f21b42ff713d646bf710894d80623.jpg",
+      "sha256": "f0f739fbce9cc6a16198e87c8be53ed0c97f21b42ff713d646bf710894d80623",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/1-6/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/f26c2ec6265d3f6fdcc261e5c00b69eed6f752c3746801b446e5233b6a6ee88d.jpg",
+      "sha256": "f26c2ec6265d3f6fdcc261e5c00b69eed6f752c3746801b446e5233b6a6ee88d",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-2/index.html"
+      ]
+    },
+    {
+      "imported_bytes_at_audit": 957396,
+      "path": "assets/embedded/fa8c25076d889777c22a710df5e13dde55f3b078471681f83728a7b685f24e57.jpg",
+      "sha256": "fa8c25076d889777c22a710df5e13dde55f3b078471681f83728a7b685f24e57",
+      "source_bytes": 306503,
+      "source_stage_titles": [
+        "game/2-4/index.html"
+      ]
+    }
+  ],
+  "reviewed_resource_loader_sha256": {
+    "src/campaign_map.gd": "e2163b48d0a75c33b48dddbdb87b39bd49b85d3dd91929ae6cb6d70e83251049",
+    "src/character_select.gd": "30a9fd4e0ff9a604f584d3e4617df2af2f85bbe61f8f9f246a307388231b28a3",
+    "src/credits_roll.gd": "2c331f45f049473d180d96943891b72855f33642b3f95e8363fd45eb57e2c00c",
+    "src/game_audio.gd": "0ffcbccc54104f46a7de2f1a75a18ff7e0a2078320ef0bdfe9c131f7d223ec40",
+    "src/main.gd": "6d8cf63e15733e60d373040428bbddb828353752c15a0606cfd0342989a23f7e",
+    "src/original_score.gd": "fe238e76ab85eefb4c7e5da0900569a2cf98c02728571f53047e5bc8addd809f",
+    "src/story_player.gd": "83e1d7f9d22e654f37c2fdfaccd89cb50109aa5fc7a9846955b702e6d893afc0"
+  },
+  "runtime_title_retained": "assets/title.jpg",
+  "schema_version": 1,
+  "scope": "Web Browser Preview only; omit unused original HTML SRC.title copies, never remove source or native imports",
+  "selector_background_retained": "content/levels/1-1.json:imgs.st0"
+}
