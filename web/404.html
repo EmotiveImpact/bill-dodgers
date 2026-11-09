@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bill Dodgers</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; background: #141026; color: #f5f1ea; font: 16px/1.5 system-ui, sans-serif; }
+  main { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; text-align: center; box-sizing: border-box; }
+  a { display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 999px; background: #f4c542; color: #1c1606; font-weight: 700; text-decoration: none; }
+</style>
+</head>
+<body>
+<main>
+  <p>That level isn't here. Taking you back to the map.</p>
+  <a id="back" href="./">Back to the map</a>
+</main>
+<script>
+  // The game lives at the root of its own address and under /arcade/bill-dodgers/ on ourcommune.io.
+  // A level from a members' world (3 to 6) goes back to the map with the members card open; anything else, to the map.
+  (function () {
+    var p = location.pathname, m = /^(.*?\/)([1-6])-[1-7S](?:\/.*)?$/.exec(p);
+    var base = m ? m[1] : (/^(.*\/bill-dodgers\/)/.exec(p) || [0, '/'])[1];
+    var to = base + '#map' + (m && +m[2] > 2 ? '&members=' + m[2] : '');
+    document.getElementById('back').href = to;
+    location.replace(to);
+  })();
+</script>
+</body>
+</html>
