@@ -79,6 +79,11 @@ Select any of six housemates. Keyboard: left/right or A/D to move, Z to jump, do
 
 ## Native exports
 
+For the separate browser demo, see [Godot Web demo](../docs/GODOT_WEB_DEMO.md).
+It exports this engine project and does not replace the original Canvas web site.
+The Web preset, template-aware export helper and browser-foundation regressions
+are included; actual iPhone/Safari acceptance remains separate.
+
 The Android and iOS development presets use a provisional `.preview` application ID and contain no credentials. They are setup groundwork, not verified installable builds.
 
 - Android needs matching Godot export templates, Android SDK/JDK and a debug/signing setup. Open Export in Godot, resolve its requirements, then export the Android Native Preview preset.

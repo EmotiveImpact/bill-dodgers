@@ -97,6 +97,10 @@ func _finish(skipped: bool) -> void:
 		return
 	playing = false
 	hide()
+	# Keep repeated shots cheap within a scene, but do not retain every painting
+	# seen across a campaign. Clear before the signal: a listener may start the
+	# next scene synchronously and its fresh cache must survive this finish.
+	textures.clear()
 	finished.emit(scene_id, skipped)
 
 func advance() -> void:

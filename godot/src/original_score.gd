@@ -18,6 +18,15 @@ func _ready() -> void:
 	super._ready()
 	spare = AudioStreamPlayer.new()
 	add_child(spare)
+	_configure_score_playback(OS.has_feature("web"))
+
+func _configure_score_playback(web_build: bool) -> void:
+	# Web Sample playback expands entire songs into browser PCM buffers. Stream
+	# only the two long-form music voices; short effects retain the engine default
+	# and native builds keep their existing playback path. Swapping these players
+	# during a crossfade preserves the policy on both voices.
+	for player in [music_player, spare]:
+		player.playback_type = AudioServer.PLAYBACK_TYPE_STREAM if web_build else AudioServer.PLAYBACK_TYPE_DEFAULT
 
 func set_level(id: String) -> void:
 	level_id = id

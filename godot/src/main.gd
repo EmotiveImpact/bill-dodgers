@@ -781,13 +781,15 @@ func _unhandled_input(event: InputEvent) -> void:
 func _notification(what: int) -> void:
 	if mode == "credits" and is_instance_valid(credits_roll):
 		if what == NOTIFICATION_WM_GO_BACK_REQUEST: credits_roll.skip()
-		elif what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+		elif what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT]:
 			credits_roll.set_paused(true)
 			if audio != null: audio.set_paused(true)
-		elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN]:
+		elif what in [NOTIFICATION_APPLICATION_RESUMED, NOTIFICATION_APPLICATION_FOCUS_IN, NOTIFICATION_WM_WINDOW_FOCUS_IN]:
 			credits_roll.set_paused(false)
 			if audio != null: audio.set_paused(false)
-	if what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_GO_BACK_REQUEST]:
+	# Web exports signal canvas/window focus, rather than application focus.
+	# Both routes must pause and release held touches/keys before resuming.
+	if what in [NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_WM_GO_BACK_REQUEST]:
 		_release_input()
 		if mode in ["play", "story"] and is_instance_valid(ui): _pause()
 

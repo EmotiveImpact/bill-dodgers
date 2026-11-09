@@ -4,6 +4,21 @@ Recorded 2026-11-09. The native source, original artwork inputs, legal notices,
 setup helper and tests are version-controlled. This is a development checkpoint,
 not an installable phone build, final soundtrack approval or release certificate.
 
+## Browser-demo follow-up
+
+A separate single-threaded Godot Web release export now succeeds using verified
+official 4.6.3 templates. Its actual resource pack passes 304 asset-free runtime
+checks. The new Web-foundation launcher passes 23 story-cache, 11 music-policy,
+91 runtime-prerequisite and 21 focus-lifecycle checks, plus 16 Python guards.
+All Python source/setup tests pass (65 total at this checkpoint).
+
+Finished cutscenes now release their textures, reducing measured post-story
+live engine allocations by about 194 MiB. Browser music streams instead of
+requesting full-song Sample buffers; native music and short effects are unchanged.
+Window/canvas focus loss now pauses and releases input, matching the Web engine's
+notification route. See [Web demo setup and limitations](GODOT_WEB_DEMO.md).
+These targeted tests are not a new whole-campaign run or physical Safari test.
+
 ## Fresh-computer proof
 
 A source-only copy of the 885 files in local commit

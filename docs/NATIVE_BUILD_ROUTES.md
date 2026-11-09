@@ -1,5 +1,16 @@
 # Native build routes
 
+## Current follow-up
+
+The inspection below records the initial build environment. Since then, the
+Godot project has been saved on the `mobile/godot-foundation` GitHub branch,
+without changing `main` or its deployment. Official 4.6.3 Web export templates
+were obtained and a separate single-threaded Godot browser export now succeeds.
+See [the Web demo guide](GODOT_WEB_DEMO.md). These updates do not supply the
+missing Android SDK/full JDK, Xcode/signing setup or physical-device acceptance.
+
+## Original inspection
+
 Read-only investigation on 2026-11-09. No software was installed, credentials inspected, workflow dispatched, source pushed, or release submitted. This report is the only file added by the investigation.
 
 ## Finding
